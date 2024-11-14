@@ -77,19 +77,105 @@ document.addEventListener('DOMContentLoaded', () => {
         ) {
           pacmanCurrPos -= 1
         }
+        if (squares[pacmanCurrPos - 1] === squares[363]) {
+          pacmanCurrPos = 391
+        }
         break
       case 'ArrowRight':
-        pacmanCurrPos += 1
+        if (pacmanCurrPos % width < width - 1 &&
+          !squares[pacmanCurrPos + 1].classList.contains('wall') &&
+          !squares[pacmanCurrPos + 1].classList.contains('ghost-lair')
+        ) {
+          pacmanCurrPos += 1
+        }
+        if (squares[pacmanCurrPos + 1] === squares[392]) {
+          pacmanCurrPos = 364
+        }
         break
       case 'ArrowUp':
-        pacmanCurrPos -= width
+        if (pacmanCurrPos - width >= 0 &&
+          !squares[pacmanCurrPos - width].classList.contains('wall') &&
+          !squares[pacmanCurrPos + width].classList.contains('ghost-lair')
+        ) {
+          pacmanCurrPos -= width
+        }
         break
       case 'ArrowDown':
-        pacmanCurrPos += width
+        if (pacmanCurrPos + width < width*width &&
+           !squares[pacmanCurrPos + width].classList.contains('wall') &&
+           !squares[pacmanCurrPos + width].classList.contains('ghost-lair')
+        ) {
+          pacmanCurrPos += width
+        }
         break
     }
     squares[pacmanCurrPos].classList.add('pac-man')
+    // checkForWin()
+    // checkForGameOver()
+    pacDotEaten()
+    powerPelletEaten()
+
   }
   document.addEventListener('keyup', movePacman)
+
+  //pac dot eaten
+  function pacDotEaten() {
+    if (squares[pacmanCurrPos].classList.contains('pac-dot')) {
+      score++
+      scoreDisplay.innerHTML = score
+      squares[pacmanCurrPos].classList.remove('pac-dot')
+    }
+  }
+
+  // power pellet eaten
+  function powerPelletEaten() {
+    if (squares[pacmanCurrPos].classList.contains('power-pellet')) {
+      score += 10
+      scoreDisplay.innerHTML = score
+      // scare ghosts
+
+      squares[pacmanCurrPos].classList.remove('power-pellet')
+    }
+  }
+
+  // create ghosts
+  class Ghost {
+    constructor(className,startIndex,speed){
+      this.className = className
+      this.startIndex = startIndex
+      this.speed = speed
+      this.currentIndex = startIndex
+      this.isScared = false
+      this.timerID = NaN
+    }
+  }
+
+  ghosts = [
+    new Ghost('blinky', 348, 250),
+    new Ghost('pinky', 376, 400),
+    new Ghost('clyde', 379, 500),
+    new Ghost('inky', 351, 300)
+  ]
+  // draw ghosts
+  ghosts.forEach(ghost => {
+    squares[ghost.currentIndex].classList.add(ghost.className)
+    squares[ghost.currentIndex].classList.add('ghost')
+  })
+
+  // move ghosts
+  ghosts.forEach(ghost => moveGhost(ghost))
+
+  function moveGhost(ghost){
+    const directions = [-1, 1, width, -width]
+    const direction = directions[Math.floor(Math.random() * directions.length)]
+
+    ghost.timerID = setInterval(function() {
+      squares[ghost.currentIndex].classList.remove(ghost.className, 'ghost')
+      ghost.currentIndex += direction
+      squares[ghost.currentIndex].classList.add(ghost.className, 'ghost')
+
+    }, ghost.speed)
+  }
+
 
 }) 
