@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
           pacmanCurrPos -= 1
         }
         // condition for center area of map
-        if (squares[pacmanCurrPos - 1] === squares[363]) {
+        if ((pacmanCurrPos - 1) === squares[363]) {
           pacmanCurrPos = 391
         }
         break
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
           pacmanCurrPos += 1
         }
         // condition for center area of map
-        if (squares[pacmanCurrPos + 1] === squares[392]) {
+        if ((pacmanCurrPos + 1) === squares[392]) {
           pacmanCurrPos = 364
         }
         break
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     powerPelletEaten()
   }
   // move pac-man based on keyup event
-  document.addEventListener('keyup', movePacman)
+  document.addEventListener('keydown', movePacman)
 
   // pac-man eats a pac dot
   function pacDotEaten() {
@@ -163,17 +163,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
   // initialize ghost array
-  ghosts = [
+  const ghosts = [
     new Ghost('blinky', 348, 250),
     new Ghost('pinky', 376, 400),
     new Ghost('clyde', 379, 500),
     new Ghost('inky', 351, 300)
   ]
   // draw ghosts
-  ghosts.forEach(ghost => {
-    squares[ghost.currentIndex].classList.add(ghost.className)
-    squares[ghost.currentIndex].classList.add('ghost')
-  })
+  ghosts.forEach(ghost => 
+    squares[ghost.currentIndex].classList.add(ghost.className, "ghost"))
+  
 
   // move ghosts
   ghosts.forEach(ghost => moveGhost(ghost))
@@ -196,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       // if ghost is scared and pac-man eats them
       if (ghost.isScared && squares[ghost.currentIndex].classList.contains('pac-man')) {
+        ghost.isScared = false
         squares[ghost.currentIndex].classList.remove(ghost.className, 'ghost', 'scared-ghost')
         ghost.currentIndex = ghost.startIndex
         score += 10*scoreMul
