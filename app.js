@@ -172,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // draw ghosts
   ghosts.forEach(ghost => 
     squares[ghost.currentIndex].classList.add(ghost.className, "ghost"))
-  
 
   // move ghosts
   ghosts.forEach(ghost => moveGhost(ghost))
