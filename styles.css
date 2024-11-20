@@ -13,7 +13,7 @@
 
 .pac-dot {
   background-color: orange;
-  border: 5px solid white;
+  border: 5px solid black;
   box-sizing: border-box;
 }
 
@@ -49,4 +49,16 @@
 
 .scared-ghost {
   background-color: aqua;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#gameCanvas {
+  border: 1px solid black;  
 }
