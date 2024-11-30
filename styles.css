@@ -51,14 +51,36 @@
   background-color: aqua;
 }
 
+/* New body styling to center everything vertically */
 body {
   height: 100%;
   margin: 0;
   display: flex;
+  flex-direction: column; /* Stack items vertically */
   justify-content: center;
-  align-items: center;
+  align-items: center; /* Center horizontally */
+  text-align: center;
+  background-color: black;
+  color: white;
 }
 
 #gameCanvas {
-  border: 1px solid black;  
+  width: 560px; /* Same size as the grid */
+  height: 560px;
+  border: 1px solid black;  /* Keep the border */
+  margin-bottom: 20px; /* Add space below the canvas */
+}
+
+#score {
+  font-size: 20px;  /* Existing size, adjust if needed */
+  font-weight: bold;  /* Make it bolder for visibility */
+  font-size: 1.5rem; 
+  margin: 0; /* Remove default margin */
+  color: white; 
+}
+
+#level {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: white;
 }
