@@ -14,6 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let pacmanDirection = null; // Track the current movement direction
   let moveInterval = null; // Interval to move Pac-Man continuously
   let scareTimeoutId;
+  let leftCount = 0;
+  let rightCount = 0;
+  let upCount = 0;
+  let downCount = 0;
 
   // 0 - pac-dots, 1 - wall, 2 - ghost-lair, 3 - power-pellet, 4 - empty
   const layout = [
@@ -135,24 +139,47 @@ document.addEventListener('DOMContentLoaded', () => {
   function drawPacman() {
     const row = Math.floor(pacmanCurrPos / width);
     const col = pacmanCurrPos % width;
+    let pacmanSprite;
     
-    let pacmanSprite = pacmanSprites.right;
-
     switch (pacmanDirection) {
       case 'up':
-        pacmanSprite = pacmanSprites.up;
+        if (upCount === 0 || upCount === 2 || upCount === 4){
+          pacmanSprite = pacmanSprites.up;
+        } else if (upCount === 1){
+          pacmanSprite = pacmanSprites.wideUp;
+        } else if (upCount === 3){
+          pacmanSprite = pacmanSprites.closed;
+        }
         break;
       case 'down':
-        pacmanSprite = pacmanSprites.down;
+        if (downCount === 0 || downCount === 2 || downCount === 4){
+          pacmanSprite = pacmanSprites.down;
+        } else if (downCount === 1){
+          pacmanSprite = pacmanSprites.wideDown;
+        } else if (downCount === 3){
+          pacmanSprite = pacmanSprites.closed;
+        }
         break;
       case 'left':
-        pacmanSprite = pacmanSprites.left;
+        if (leftCount === 0 || leftCount === 2 || leftCount === 4){
+          pacmanSprite = pacmanSprites.left;
+        } else if (leftCount === 1){
+          pacmanSprite = pacmanSprites.wideLeft;
+        } else if (leftCount === 3){
+          pacmanSprite = pacmanSprites.closed;
+        }
         break;
       case 'right':
-        pacmanSprite = pacmanSprites.right;
+        if (rightCount === 0 || rightCount === 2 || rightCount === 4){
+          pacmanSprite = pacmanSprites.right;
+        } else if (rightCount === 1){
+          pacmanSprite = pacmanSprites.wideRight;
+        } else if (rightCount === 3){
+          pacmanSprite = pacmanSprites.closed;
+        }
         break;
       default:
-        pacmanSprite = pacmanSprites.right;  // Default to right if no direction
+        pacmanSprite = pacmanSprites.closed;  // Default to right if no direction
     }
   
     // Draw Pac-Man's sprite at the correct position
@@ -243,18 +270,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Logic to update Pac-Man's position based on the current direction
     if (direction === 'up') {
+      if (upCount === 4) {
+        upCount = 0;
+      } else {
+        upCount++;
+      }
       if (pacmanCurrPos - width >= 0 && layout[pacmanCurrPos - width] !== 1 && layout[pacmanCurrPos - width] !== 2) {
         nextPos -= width;
       }
     } else if (direction === 'down') {
+      if (downCount === 4) {
+        downCount = 0;
+      } else {
+        downCount++;
+      }
       if (pacmanCurrPos + width < layout.length && layout[pacmanCurrPos + width] !== 1 && layout[pacmanCurrPos + width] !== 2) {
         nextPos += width;
       }
     } else if (direction === 'left') {
+      if (leftCount === 4) {
+        leftCount = 0;
+      } else {
+        leftCount++;
+      }
       if (pacmanCurrPos % width !== 0 && layout[pacmanCurrPos - 1] !== 1 && layout[pacmanCurrPos - 1] !== 2) {
         nextPos -= 1;
       }
     } else if (direction === 'right') {
+      if (rightCount === 4) {
+        rightCount = 0;
+      } else {
+        rightCount++;
+      }
       if ((pacmanCurrPos + 1) % width !== 0 && layout[pacmanCurrPos + 1] !== 1 && layout[pacmanCurrPos + 1] !== 2) {
         nextPos += 1;
       }
