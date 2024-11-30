@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const multiplier = 10
   let score = 0
   let pacmanCurrPos = 490
+  let pacmanDirection = null; // Track the current movement direction
+  let moveInterval = null; // Interval to move Pac-Man continuously
+  let scareTimeoutId;
+
   // 0 - pac-dots, 1 - wall, 2 - ghost-lair, 3 - power-pellet, 4 - empty
   const layout = [
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -43,19 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
   ]
 
-  // Initialize ghosts
-  class Ghost {
-    constructor(className, startIndex, speed, color) {
-      this.className = className
-      this.currentIndex = startIndex
-      this.startIndex = startIndex
-      this.isScared = false
-      this.speed = speed
-      this.color = color
-      this.timerID = NaN
-    }
-  }
-
+  // initialize array of ghosts
   const ghosts = [
     new Ghost('blinky', 348, 250, 'red'),
     new Ghost('pinky', 376, 400, 'pink'),
@@ -73,12 +65,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Redraw the board
     createBoard()
+
+    // Call functions to update the game state
+    pacDotEaten();
+    powerPelletEaten();
+    checkGhostEaten();
+    checkForGameOver();
+    checkForWin();
     
     // Draw Pac-Man
-    drawPacman()
+    drawPacman();
 
     // Draw ghosts
-    drawGhosts()
+    drawGhosts();
 
     // Request the next frame
     requestAnimationFrame(gameLoop)
@@ -95,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (tile === 0) {
           ctx.fillStyle = 'purple'
           ctx.beginPath()
-          ctx.arc(col * tileSize + tileSize / 2, row * tileSize + tileSize / 2, 5, 0, Math.PI * 2)
+          ctx.arc(col * tileSize + tileSize / 2, row * tileSize + tileSize / 2, 2, 0, Math.PI * 2)
           ctx.fill()
         }
         // Draw walls
@@ -123,14 +122,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Draw Pac-Man
+  // // Draw Pac-Man
+  // function drawPacman() {
+  //   const row = Math.floor(pacmanCurrPos / width)
+  //   const col = pacmanCurrPos % width
+  //   ctx.fillStyle = 'yellow'
+  //   ctx.beginPath()
+  //   ctx.arc(col * tileSize + tileSize / 2, row * tileSize + tileSize / 2, 10, 0, Math.PI * 2)
+  //   ctx.fill()
+  // }
+
   function drawPacman() {
-    const row = Math.floor(pacmanCurrPos / width)
-    const col = pacmanCurrPos % width
-    ctx.fillStyle = 'yellow'
-    ctx.beginPath()
-    ctx.arc(col * tileSize + tileSize / 2, row * tileSize + tileSize / 2, 10, 0, Math.PI * 2)
-    ctx.fill()
+    const row = Math.floor(pacmanCurrPos / width);
+    const col = pacmanCurrPos % width;
+    
+    let pacmanSprite = pacmanSprites.right;
+
+    switch (pacmanDirection) {
+      case 'up':
+        pacmanSprite = pacmanSprites.up;
+        break;
+      case 'down':
+        pacmanSprite = pacmanSprites.down;
+        break;
+      case 'left':
+        pacmanSprite = pacmanSprites.left;
+        break;
+      case 'right':
+        pacmanSprite = pacmanSprites.right;
+        break;
+      default:
+        pacmanSprite = pacmanSprites.right;  // Default to right if no direction
+    }
+  
+    // Draw Pac-Man's sprite at the correct position
+    if (pacmanSprite.complete) {
+      ctx.drawImage(pacmanSprite, col * tileSize, row * tileSize, tileSize, tileSize);
+    } else {
+      console.log("Pac-Man sprite not loaded yet.");
+    }
   }
 
   // Draw ghosts
@@ -157,48 +187,99 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function movePacman(e) {
-    const key = e.key;  // Get the key pressed
-  
-    // Determine the direction to move based on the key
-    let nextPos = pacmanCurrPos;
+  document.addEventListener('keyup', (e) => {
+    const key = e.key;
+    console.log(key);
+
+    const directions = [-1, 1, -width, width]; // left, right, up, down
+    const validDirections = [];
     
-    // Check for valid moves based on the direction
-    if (key === 'ArrowUp') {
-      // Make sure Pac-Man isn't moving out of bounds (no wrapping on vertical edges)
+    directions.forEach(direction => {
+      const nextPos = pacmanCurrPos + direction;
+      // Check if next move is valid
+      if (nextPos >= 0 && 
+          nextPos < layout.length && 
+          layout[nextPos] !== 1 &&
+          layout[nextPos] !== 2) {
+            validDirections.push(direction);  // Add valid directions to the list
+      }
+    });
+    // Check if the key is a direction key and if it's different from the current direction
+    if (key === 'ArrowUp' && pacmanDirection !== 'up' && validDirections.includes(-width)) {
+      pacmanDirection = 'up';
+    } else if (key === 'ArrowDown' && pacmanDirection !== 'down' && validDirections.includes(width)) {
+      pacmanDirection = 'down';
+    } else if (key === 'ArrowLeft' && pacmanDirection !== 'left' && validDirections.includes(-1)) {
+      pacmanDirection = 'left';
+    } else if (key === 'ArrowRight' && pacmanDirection !== 'right'&& validDirections.includes(1)) {
+      pacmanDirection = 'right';
+    }
+    startMoving();
+  });
+
+  // Function to start moving Pac-Man continuously
+  function startMoving() {
+    // If Pac-Man is already moving, clear the previous interval
+    if (moveInterval) {
+      clearInterval(moveInterval);
+    }
+    // Set an interval to move Pac-Man every 125 ms
+    moveInterval = setInterval(() => {
+      movePacman(pacmanDirection);
+    }, 125);
+  }
+
+  // Function to stop moving Pac-Man (when the key is released or a direction change occurs)
+  function stopMoving() {
+    if (moveInterval) {
+      clearInterval(moveInterval);
+    }
+    moveInterval = null;
+  }
+
+  // Move Pac-Man based on the direction
+  function movePacman(direction) {
+    let nextPos = pacmanCurrPos;
+
+    // Logic to update Pac-Man's position based on the current direction
+    if (direction === 'up') {
       if (pacmanCurrPos - width >= 0 && layout[pacmanCurrPos - width] !== 1 && layout[pacmanCurrPos - width] !== 2) {
-        nextPos -= width;  // Move up
+        nextPos -= width;
       }
-    } else if (key === 'ArrowDown') {
-      // Make sure Pac-Man isn't moving out of bounds
+    } else if (direction === 'down') {
       if (pacmanCurrPos + width < layout.length && layout[pacmanCurrPos + width] !== 1 && layout[pacmanCurrPos + width] !== 2) {
-        nextPos += width;  // Move down
+        nextPos += width;
       }
-    } else if (key === 'ArrowLeft') {
-      // Ensure Pac-Man doesn't move out of bounds on the left side
+    } else if (direction === 'left') {
       if (pacmanCurrPos % width !== 0 && layout[pacmanCurrPos - 1] !== 1 && layout[pacmanCurrPos - 1] !== 2) {
-        nextPos -= 1;  // Move left
+        nextPos -= 1;
       }
-    } else if (key === 'ArrowRight') {
-      // Ensure Pac-Man doesn't move out of bounds on the right side
+    } else if (direction === 'right') {
       if ((pacmanCurrPos + 1) % width !== 0 && layout[pacmanCurrPos + 1] !== 1 && layout[pacmanCurrPos + 1] !== 2) {
-        nextPos += 1;  // Move right
+        nextPos += 1;
       }
     }
-  
-    // Update pacmanCurrPos with the new position if it's valid
+
+    // Update the position if the next position is valid
     pacmanCurrPos = nextPos;
-  
-    // Call functions to check for events
+
+    // Call functions to check for events (like eating dots, power pellets, etc.)
     pacDotEaten();
     powerPelletEaten();
     checkGhostEaten();
     checkForGameOver();
     checkForWin();
-    
+
     // Redraw the game state after moving Pac-Man
     gameLoop();
   }
+
+  // Event listener for keyup (to stop movement when the key is released)
+  document.addEventListener('keyup', (e) => {
+    if (e.key === ' '){ 
+      stopMoving();
+    }
+  });
 
   function moveGhost(ghost) {
     const directions = [-1, 1, -width, width]; // left, right, up, down
@@ -247,7 +328,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ghosts.forEach(ghost => {
       ghost.timerID = setInterval(() => {
         moveGhost(ghost);
-        drawGhosts();  // Redraw the ghosts after moving them
       }, ghost.speed);  // Speed is the movement interval (in ms)
     });
   }
@@ -271,7 +351,10 @@ document.addEventListener('DOMContentLoaded', () => {
       score += multiplier
       scoreDisplay.textContent = score
       ghosts.forEach(ghost => ghost.isScared = true)
-      setTimeout(scareReset, 10000) // <----------------- FIX
+      if (scareTimeoutId) {
+        clearTimeout(scareTimeoutId);
+      }
+      scareTimeoutId = setTimeout(() => scareReset(), 10000);
       layout[pacmanCurrPos] = 4  // Remove power pellet after eating
     }
   }
@@ -280,6 +363,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function checkForGameOver() {
       ghosts.forEach(ghost => {
         if (pacmanCurrPos === ghost.currentIndex && !ghost.isScared) {
+          clearInterval(moveInterval);
+          ghosts.forEach(ghost => clearInterval(ghost.timerID));
           setTimeout(() => {
             alert('Game Over');
           }, 500);
@@ -296,6 +381,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Event listener for Pac-Man movement
-  document.addEventListener('keydown', movePacman)
 })  
