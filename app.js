@@ -191,15 +191,43 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Draw ghosts
+  // function drawGhosts() {
+  //   ghosts.forEach(ghost => {
+  //     const row = Math.floor(ghost.currentIndex / width)
+  //     const col = ghost.currentIndex % width
+  //     ctx.fillStyle = ghost.isScared ? 'aqua' : ghost.color
+  //     ctx.beginPath()
+  //     ctx.arc(col * tileSize + tileSize / 2, row * tileSize + tileSize / 2, 10, 0, Math.PI * 2)
+  //     ctx.fill()
+  //   })
+  // }
+
   function drawGhosts() {
+    let ghostSprite;
     ghosts.forEach(ghost => {
-      const row = Math.floor(ghost.currentIndex / width)
-      const col = ghost.currentIndex % width
-      ctx.fillStyle = ghost.isScared ? 'aqua' : ghost.color
-      ctx.beginPath()
-      ctx.arc(col * tileSize + tileSize / 2, row * tileSize + tileSize / 2, 10, 0, Math.PI * 2)
-      ctx.fill()
-    })
+      const row = Math.floor(ghost.currentIndex / width);
+      const col = ghost.currentIndex % width;
+      switch (ghost.className) {
+        case 'blinky':
+          ghostSprite = blinkySprites.left;
+          break;
+        case 'inky':
+          ghostSprite = inkySprites.left;
+          break;
+        case 'clyde':
+          ghostSprite = clydeSprites.left;
+          break;
+        case 'pinky':
+          ghostSprite = pinkySprites.left;
+          break;
+      }
+      if (ghost.isScared) {
+        ghostSprite = scaredSprites.scared // Add a sprite for scared state
+      }
+  
+      // Draw the ghost's sprite at the correct position
+      ctx.drawImage(ghostSprite, col * tileSize, row * tileSize, tileSize, tileSize);
+    });
   }
 
   function checkGhostEaten() {
