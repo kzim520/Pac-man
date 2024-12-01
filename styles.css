@@ -11,22 +11,6 @@
   height: 20px;
 }
 
-.pac-dot {
-  background-color: orange;
-  border: 5px solid black;
-  box-sizing: border-box;
-}
-
-.power-pellet {
-  background-color: orange;
-  border-radius: 10px;
-}
-
-.wall {
-  background-color: black;
-}
-
-
 /* New body styling to center everything vertically */
 body {
   height: 100%;
@@ -55,8 +39,3 @@ body {
   color: white; 
 }
 
-#level {
-  font-weight: bold;
-  font-size: 1.2rem;
-  color: white;
-}
