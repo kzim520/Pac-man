@@ -23,33 +23,9 @@
 }
 
 .wall {
-  background-color: green;
+  background-color: black;
 }
 
-.pac-man {
-  background-color: gray;
-  border-radius: 10px;
-}
-
-.pinky {
-  background-color: pink;
-}
-
-.inky {
-  background-color: blue;
-}
-
-.blinky {
-  background-color: red;
-}
-
-.clyde {
-  background-color: orange;
-}
-
-.scared-ghost {
-  background-color: aqua;
-}
 
 /* New body styling to center everything vertically */
 body {

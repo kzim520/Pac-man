@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // Draw walls
         if (tile === 1) {
-          ctx.fillStyle = 'blue'
+          ctx.fillStyle = 'black'
           ctx.fillRect(col * tileSize, row * tileSize, tileSize, tileSize)
         }
         // draw ghost lair
