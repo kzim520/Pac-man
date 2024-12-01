@@ -4,10 +4,30 @@
   <meta charset="UTF-8">
   <title>Pac-man</title>
   <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
 </head>
 <body>
+  <div id="welcomePage" class="welcome-container">
+    <h1>Pac-Man</h1>
+    <p>
+      Welcome to Pac-Man! Your objective is to avoid the ghosts and clear all the pac dots from the maze.
+      You can eat power pellets to temporarily scare the ghosts and eat them for extra points.
+    </p>
+    <p><strong>Controls:</strong></p>
+    <ul>
+      <li>Arrow Keys (up/down/left/right): Move Pac-Man</li>
+      <li>'P': Pause or Resume the Game</li>
+    </ul>
+    <p><strong>Objective:</strong></p>
+    <ul>
+      <li>Eat all the dots to win the game. Try and get the highest score!</li>
+      <li>If a ghost catches you, you lose!</li>
+    </ul>
+    <button id="startButton" class="start-button">Start Game</button>
+  </div>
   <canvas id="gameCanvas" width="560" height="560"></canvas>
-  <h3>Score: <span id="score"></span></h3>
+  <h3 id="scoreDisplay">Score: <span id="score"></span></h3>
   <h3>Level: <span id="level"></span></h3>
   <script src="app.js"></script>
   <script src="ghost.js"></script>

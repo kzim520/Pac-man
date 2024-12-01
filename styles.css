@@ -60,3 +60,133 @@ body {
   font-size: 1.2rem;
   color: white;
 }
+
+/* Welcome Page */
+
+/* Global styling for the page */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Press Start 2P', cursive, sans-serif; /* Fun retro font */
+  background-color: #111;
+  overflow: hidden;
+}
+
+/* Welcome page container */
+.welcome-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  animation: fadeIn 1s ease-out;
+}
+
+/* Header styling */
+.welcome-container h1 {
+  font-size: 4em;
+  text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.6), 0 0 25px #ff00ff, 0 0 5px #ff00ff;
+  color: #ffcc00;
+  animation: bounceIn 1s ease;
+  margin-bottom: 20px;
+}
+
+/* Text and paragraph styling */
+.welcome-container p {
+  font-size: 1.3em;
+  margin: 15px 0;
+  line-height: 1.5;
+  color: #ddd;
+  animation: fadeIn 2s ease-out;
+}
+
+.welcome-container strong {
+  color: #ffcc00;
+}
+
+/* Styling for the control instructions */
+.welcome-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.welcome-container li {
+  font-size: 1.2em;
+  color: #ffcc00;
+  margin: 5px 0;
+}
+
+/* Styling for the start button */
+.start-button {
+  background-color: #ffcc00;
+  color: black;
+  border: 3px solid #ff6600;
+  font-size: 1.6em;
+  padding: 15px 30px;
+  margin-top: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  animation: popIn 0.5s ease-out;
+}
+
+.start-button:hover {
+  background-color: #ff6600;
+  transform: scale(1.1);
+  box-shadow: 0 10px 30px rgba(255, 102, 0, 0.7);
+}
+
+.start-button:active {
+  transform: scale(1);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Keyframe animations for dynamic styling */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0);
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  80% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
