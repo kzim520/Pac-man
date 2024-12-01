@@ -19,6 +19,15 @@ document.addEventListener('DOMContentLoaded', () => {
   let upCount = 0;
   let downCount = 0;
 
+  // welcome page
+  const welcomePage = document.getElementById('welcomePage')
+  const startButton = document.getElementById('startButton')
+  const scoreLabel = document.getElementById('scoreDisplay')
+
+  showWelcomePage()
+
+  startButton.addEventListener('click', startGame)
+
   // 0 - pac-dots, 1 - wall, 2 - ghost-lair, 3 - power-pellet, 4 - empty
   const layout = [
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -60,8 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
   ]
 
   // Start the game loop
-  gameLoop()
-  startGhostMovement()
+  // gameLoop()
+  // startGhostMovement()
 
   // game loop function
   function gameLoop() {
@@ -85,6 +94,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Request the next frame
     requestAnimationFrame(gameLoop)
+  }
+
+  function showWelcomePage() {
+    welcomePage.style.display = 'flex'
+    canvas.style.display = 'none'
+    scoreLabel.style.display = 'none'
+  }
+
+  // Start the game
+  function startGame() {
+    welcomePage.style.display = 'none' // Hide the welcome page
+    scoreLabel.style.display = 'block'
+    canvas.style.display = 'block' // Show the game canvas
+    gameLoop() // Start the game loop
+    startGhostMovement() // Start ghost movement
   }
 
   function createBoard() {
