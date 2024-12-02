@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function createBoard() {
-    ctx.fillStyle = 'gray'; // Choose your desired color
+    ctx.fillStyle = 'black'; // Choose your desired color
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     for (let row = 0; row < height; row++) {
       for (let col = 0; col < width; col++) {
@@ -120,15 +120,47 @@ document.addEventListener('DOMContentLoaded', () => {
         const tile = layout[index]
         // Draw pac-dots
         if (tile === 0) {
-          ctx.fillStyle = 'purple'
+          ctx.fillStyle = "#ea82e5"
           ctx.beginPath()
           ctx.arc(col * tileSize + tileSize / 2, row * tileSize + tileSize / 2, 2, 0, Math.PI * 2)
           ctx.fill()
         }
         // Draw walls
         if (tile === 1) {
-          ctx.fillStyle = 'black'
-          ctx.fillRect(col * tileSize, row * tileSize, tileSize, tileSize)
+          // Check if wall is adjacent to pac-dots, power-pellets, or empty space in each direction
+          const isLeftAdjacentToPathway = (layout[index - 1] === 0 || layout[index - 1] === 3 || layout[index - 1] === 4);
+          const isRightAdjacentToPathway = (layout[index + 1] === 0 || layout[index + 1] === 3 || layout[index + 1] === 4);
+          const isUpAdjacentToPathway = (layout[index - width] === 0 || layout[index - width] === 3 || layout[index - width] === 4);
+          const isDownAdjacentToPathway = (layout[index + width] === 0 || layout[index + width] === 3 || layout[index + width] === 4);
+          
+          // Draw the wall tile
+          ctx.fillStyle = 'black';
+          ctx.fillRect(col * tileSize, row * tileSize, tileSize, tileSize);
+          ctx.strokeStyle = '#46bfee';  // Red border (change to preferred color)
+          ctx.lineWidth = 2;            // Border thickness
+          ctx.beginPath();
+      
+          // Add border on the left if the left side is adjacent to a pathway
+          if (isLeftAdjacentToPathway) {
+              ctx.moveTo(col * tileSize, row * tileSize); // Start at the left side of the tile
+              ctx.lineTo(col * tileSize, row * tileSize + tileSize); // Draw border to the bottom
+          }
+          // Add border on the right if the right side is adjacent to a pathway
+          if (isRightAdjacentToPathway) {
+              ctx.moveTo(col * tileSize + tileSize, row * tileSize); // Start at the right side of the tile
+              ctx.lineTo(col * tileSize + tileSize, row * tileSize + tileSize); // Draw border to the bottom
+          }
+          // Add border on the top if the top side is adjacent to a pathway
+          if (isUpAdjacentToPathway) {
+              ctx.moveTo(col * tileSize, row * tileSize); // Start at the top left corner
+              ctx.lineTo(col * tileSize + tileSize, row * tileSize); // Draw border to the top right corner
+          }
+          // Add border on the bottom if the bottom side is adjacent to a pathway
+          if (isDownAdjacentToPathway) {
+              ctx.moveTo(col * tileSize, row * tileSize + tileSize); // Start at the bottom left corner
+              ctx.lineTo(col * tileSize + tileSize, row * tileSize + tileSize); // Draw border to the bottom right corner
+          }
+          ctx.stroke();
         }
         // draw ghost lair
         if (tile === 2) {
@@ -137,10 +169,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // Draw power pellets
         if (tile === 3) {
-          ctx.fillStyle = 'purple'
-          ctx.beginPath()
-          ctx.arc(col * tileSize + tileSize / 2, row * tileSize + tileSize / 2, 10, 0, Math.PI * 2)
-          ctx.fill()
+          const powerPelletRadius = 6;  
+          const pelletOutline = powerPelletRadius + 1; 
+      
+          // Draw the white border first (larger circle)
+          ctx.strokeStyle = 'white';
+          ctx.lineWidth = 1; // Thickness of the white border
+          ctx.beginPath();
+          ctx.arc(col * tileSize + tileSize / 2, row * tileSize + tileSize / 2, pelletOutline, 0, Math.PI * 2);
+          ctx.stroke();
+      
+          // Draw the smaller purple power pellet
+          ctx.fillStyle = '#ea82e5';
+          ctx.beginPath();
+          ctx.arc(col * tileSize + tileSize / 2, row * tileSize + tileSize / 2, powerPelletRadius, 0, Math.PI * 2);
+          ctx.fill();
         }
       }
     }
