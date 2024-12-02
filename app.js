@@ -68,10 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
     new Ghost('inky', 351, 300, 'blue')
   ]
 
-  // Start the game loop
-  // gameLoop()
-  // startGhostMovement()
-
   // game loop function
   function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)  // Clear the canvas
@@ -283,10 +279,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // event listener to track players keystorkes
   document.addEventListener('keyup', (e) => {
     const key = e.key;
-    console.log(key);
-
+    // pause game
+    if (key === 'p') {
+      alert('game paused');
+    }
+    // array for directions
     const directions = [-1, 1, -width, width]; // left, right, up, down
     const validDirections = [];
     
@@ -323,14 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
     moveInterval = setInterval(() => {
       movePacman(pacmanDirection);
     }, 150);
-  }
-
-  // Function to stop moving Pac-Man (when the key is released or a direction change occurs)
-  function stopMoving() {
-    if (moveInterval) {
-      clearInterval(moveInterval);
-    }
-    moveInterval = null;
   }
 
   // Move Pac-Man based on the direction
@@ -379,7 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Update the position if the next position is valid
     pacmanCurrPos = nextPos;
 
-    // Call functions to check for events (like eating dots, power pellets, etc.)
+    // Call functions to check for events
     pacDotEaten();
     powerPelletEaten();
     checkGhostEaten();
@@ -387,52 +379,10 @@ document.addEventListener('DOMContentLoaded', () => {
     checkForWin();
 
     // Redraw the game state after moving Pac-Man
-    gameLoop();
+    requestAnimationFrame(gameLoop);
   }
 
-  // Event listener for keyup (to stop movement when the key is released)
-  document.addEventListener('keyup', (e) => {
-    if (e.key === ' '){ 
-      stopMoving();
-    }
-  });
-
-  // function moveGhost(ghost) {
-  //   const directions = [-1, 1, -width, width]; // left, right, up, down
-  //   const validMoves = [];
-    
-  //   // Determine the potential new positions for the ghost based on each direction
-  //   directions.forEach(direction => {
-  //     const nextPos = ghost.currentIndex + direction;
-  //     // Check if next move is valid
-  //     if (nextPos >= 0 && 
-  //         nextPos < layout.length && 
-  //         layout[nextPos] !== 1 && 
-  //         !isGhostAtPosition(nextPos)) {
-  //           validMoves.push(nextPos);  // Add valid positions to the list
-  //     }
-  //   });
-  
-  //   if (validMoves.length > 0) {
-  //     // Pick a random valid move
-  //     const moveDirection = validMoves[Math.floor(Math.random() * validMoves.length)];
-  //     validMoves.forEach(move => {
-
-  //     })
-  //     // Update the ghost's current position
-  //     ghost.currentIndex = moveDirection;
-  //   }
-  
-  //   // If the ghost is scared, they move in the opposite direction
-  //   if (ghost.isScared) {
-  //     // If the ghost is scared, reverse their movement direction by flipping the direction.
-  //     directions.reverse(); 
-  //   }
-  //   // Check is ghost was eaten or a ghost eats pacman
-  //   checkGhostEaten();
-  //   checkForGameOver();
-  // }
-
+  // helper function for determining ghost movement
   function manhattanDistance(pos1, pos2) {
     const row1 = Math.floor(pos1 / width);
     const col1 = pos1 % width;
@@ -441,55 +391,126 @@ document.addEventListener('DOMContentLoaded', () => {
     return Math.abs(row1 - row2) + Math.abs(col1 - col2);
   }
 
+  // // function for ghost movement
+  // function moveGhost(ghost) {
+  //   // left, right, up, down
+  //   const directions = [-1, 1, -width, width]; 
+
+  //   // variables used to determine best move
+  //   let bestMove = null;
+  //   let minDistance = Infinity;
+  //   let maxDistance = 0;
+  
+  //   // Iterate through all possible directions (left, right, up, down)
+  //   directions.forEach(direction => {
+  //     const nextPos = ghost.currentIndex + direction;
+  //      // Check if next move is valid 
+  //     if (nextPos >= 0 && nextPos < layout.length &&
+  //         layout[nextPos] !== 1 && // not a wall
+  //         !isGhostAtPosition(nextPos)) { // not another ghost
+  //         // calculate distance to pacman from nextPos
+  //         const distanceToPacman = manhattanDistance(nextPos, pacmanCurrPos);
+  //       if (!ghost.isScared){
+  //           // Choose the move with the smallest distance to Pac-Man
+  //           if (distanceToPacman < minDistance) {
+  //             minDistance = distanceToPacman;
+  //             bestMove = nextPos;
+  //           }
+  //       } else {
+  //           // Choose the move with the smallest distance to Pac-Man
+  //           if (distanceToPacman > maxDistance) {
+  //             maxDistance = distanceToPacman;
+  //             bestMove = nextPos;
+  //           }
+  //         }
+  //       }
+  //   });
+    
+  //   // If a valid best move was found, move the ghost there
+  //   if (bestMove !== null) {
+  //     ghost.currentIndex = bestMove;
+  //   }
+    
+  //   // Check if ghost ate Pac-Man or Pac-Man ate the ghost
+  //   checkGhostEaten();
+  //   checkForGameOver();
+  // }
+
   function moveGhost(ghost) {
     const directions = [-1, 1, -width, width]; // left, right, up, down
     let bestMove = null;
     let minDistance = Infinity;
     let maxDistance = 0;
   
-    // Iterate through all possible directions (left, right, up, down)
-    directions.forEach(direction => {
-      const nextPos = ghost.currentIndex + direction;
-      if (!ghost.isScared){
-        // Check if next move is valid (within bounds and not a wall or ghost)
+    // BFS to find the shortest path to Pac-Man
+    const path = BFS(ghost.currentIndex, pacmanCurrPos);
+  
+    if (path && path.length > 0 && !ghost.isScared) {
+      // The first step in the shortest path
+      bestMove = path[0];
+    } else {
+      directions.forEach(direction => {
+        const nextPos = ghost.currentIndex + direction;
         if (nextPos >= 0 && nextPos < layout.length &&
             layout[nextPos] !== 1 && // not a wall
             !isGhostAtPosition(nextPos)) { // not another ghost
-            
           const distanceToPacman = manhattanDistance(nextPos, pacmanCurrPos);
-    
-          // Choose the move with the smallest distance to Pac-Man
-          if (distanceToPacman < minDistance) {
-            minDistance = distanceToPacman;
-            bestMove = nextPos;
+          if (!ghost.isScared) {
+            if (distanceToPacman < minDistance) {
+              minDistance = distanceToPacman;
+              bestMove = nextPos;
+            }
+          } else {
+            if (distanceToPacman > maxDistance) {
+              maxDistance = distanceToPacman;
+              bestMove = nextPos;
+            }
           }
         }
-      } else {
-        // Check if next move is valid (within bounds and not a wall or ghost)
-        if (nextPos >= 0 && nextPos < layout.length &&
-          layout[nextPos] !== 1 && // not a wall
-          !isGhostAtPosition(nextPos)) { // not another ghost
-          
-        const distanceToPacman = manhattanDistance(nextPos, pacmanCurrPos);
-  
-        // Choose the move with the smallest distance to Pac-Man
-        if (distanceToPacman > maxDistance) {
-          maxDistance = distanceToPacman;
-          bestMove = nextPos;
-        }
-      }
-      }
-    });
-    
+      });
+    }
   
     // If a valid best move was found, move the ghost there
     if (bestMove !== null) {
       ghost.currentIndex = bestMove;
     }
-    
+  
     // Check if ghost ate Pac-Man or Pac-Man ate the ghost
     checkGhostEaten();
     checkForGameOver();
+  }
+  
+  // BFS to find the shortest path to Pac-Man
+  function BFS(start, target) {
+    const queue = [[start]]; // queue holds arrays of positions representing the path
+    const visited = new Set(); // set to keep track of visited positions
+    const directions = [-1, 1, -width, width]; // left, right, up, down
+  
+    visited.add(start);
+  
+    while (queue.length > 0) {
+      const path = queue.shift(); // Get the first path in the queue
+      const current = path[path.length - 1]; // Current position in the path
+  
+      if (current === target) {
+        return path.slice(1); // Exclude the start position
+      }
+  
+      // Explore all possible directions
+      directions.forEach(direction => {
+        const nextPos = current + direction;
+  
+        if (nextPos >= 0 && nextPos < layout.length &&
+            layout[nextPos] !== 1 && // not a wall
+            !visited.has(nextPos)) { // not visited yet
+          visited.add(nextPos);
+          queue.push([...path, nextPos]);
+        }
+      });
+    }
+  
+    // If no path is found, return null
+    return null;
   }
 
   // Helper function to check if a ghost is already at a specific position
