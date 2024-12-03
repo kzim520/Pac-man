@@ -3,14 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('gameCanvas')
   const ctx = canvas.getContext('2d')
   // intialize variables and constants
-  const width = 28
-  const height = 28
-  const tileSize = 20
-  const scoreDisplay = document.getElementById('score')
-  const winScore = Infinity
-  const multiplier = 10
-  let score = 0
-  let pacmanCurrPos = 490
+  const width = 28;
+  const height = 28;
+  const tileSize = 25;
+  const scoreDisplay = document.getElementById('score');
+  const winScore = Infinity;
+  const multiplier = 10;
+  let score = 0;
+  let pacmanCurrPos = 490;
   let pacmanDirection = null; // Track the current movement direction
   let moveInterval = null; // Interval to move Pac-Man continuously
   let scareTimeoutId;
@@ -20,13 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
   let downCount = 0;
 
   // welcome page
-  const welcomePage = document.getElementById('welcomePage')
-  const startButton = document.getElementById('startButton')
-  const scoreLabel = document.getElementById('scoreDisplay')
+  const welcomePage = document.getElementById('welcomePage');
+  const startButton = document.getElementById('startButton');
+  const scoreLabel = document.getElementById('scoreDisplay');
 
-  showWelcomePage()
+  showWelcomePage();
 
-  startButton.addEventListener('click', startGame)
+  startButton.addEventListener('click', startGame);
 
   // 0 - pac-dots, 1 - wall, 2 - ghost-lair, 3 - power-pellet, 4 - empty
   const layout = [
@@ -93,18 +93,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showWelcomePage() {
-    welcomePage.style.display = 'flex'
-    canvas.style.display = 'none'
-    scoreLabel.style.display = 'none'
+    welcomePage.style.display = 'flex';
+    canvas.style.display = 'none';
+    scoreLabel.style.display = 'none';
   }
 
   // Start the game
   function startGame() {
-    welcomePage.style.display = 'none' // Hide the welcome page
-    scoreLabel.style.display = 'block'
-    canvas.style.display = 'block' // Show the game canvas
-    gameLoop() // Start the game loop
-    startGhostMovement() // Start ghost movement
+    welcomePage.style.display = 'none'; // Hide the welcome page
+    scoreLabel.style.display = 'block';
+    canvas.style.display = 'block'; // Show the game canvas
+    gameLoop(); // Start the game loop
+    startGhostMovement(); // Start ghost movement
   }
 
   function createBoard() {
@@ -112,14 +112,14 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     for (let row = 0; row < height; row++) {
       for (let col = 0; col < width; col++) {
-        const index = row * width + col
-        const tile = layout[index]
+        const index = row * width + col;
+        const tile = layout[index];
         // Draw pac-dots
         if (tile === 0) {
-          ctx.fillStyle = "#ea82e5"
-          ctx.beginPath()
-          ctx.arc(col * tileSize + tileSize / 2, row * tileSize + tileSize / 2, 2, 0, Math.PI * 2)
-          ctx.fill()
+          ctx.fillStyle = "#ea82e5";
+          ctx.beginPath();
+          ctx.arc(col * tileSize + tileSize / 2, row * tileSize + tileSize / 2, 2, 0, Math.PI * 2);
+          ctx.fill();
         }
         // Draw walls
         if (tile === 1) {
@@ -160,8 +160,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // draw ghost lair
         if (tile === 2) {
-          ctx.fillStyle = 'beige'
-          ctx.fillRect(col * tileSize, row * tileSize, tileSize, tileSize)
+          ctx.fillStyle = 'beige';
+          ctx.fillRect(col * tileSize, row * tileSize, tileSize, tileSize);
         }
         // Draw power pellets
         if (tile === 3) {
