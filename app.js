@@ -41,9 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
     1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
-    1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 1, 1, 2, 2, 1, 1, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 1, 2, 2, 2, 2, 1, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 2, 2, 2, 2, 2, 2, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
-    4, 4, 4, 4, 4, 4, 0, 0, 0, 4, 1, 2, 2, 2, 2, 2, 2, 1, 4, 0, 0, 0, 4, 4, 4, 4, 4, 4,
+    4, 4, 4, 4, 4, 4, 0, 0, 3, 4, 1, 2, 2, 2, 2, 2, 2, 1, 4, 3, 0, 0, 4, 4, 4, 4, 4, 4,
     1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 2, 2, 2, 2, 2, 2, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
     1, 1, 1, 1, 1, 1, 0, 1, 1, 4, 1, 1, 1, 1, 1, 1, 1, 1, 4, 1, 1, 0, 1, 1, 1, 1, 1, 1,
@@ -63,9 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // initialize array of ghosts
   const ghosts = [
     new Ghost('blinky', 348, 250, 'red'),
-    new Ghost('pinky', 376, 400, 'pink'),
-    new Ghost('clyde', 379, 500, 'orange'),
-    new Ghost('inky', 351, 300, 'blue')
+    new Ghost('pinky', 404, 250, 'pink'),
+    new Ghost('clyde', 407, 250, 'orange'),
+    new Ghost('inky', 351, 250, 'blue')
   ]
 
   // game loop function
@@ -357,6 +357,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (pacmanCurrPos % width !== 0 && layout[pacmanCurrPos - 1] !== 1 && layout[pacmanCurrPos - 1] !== 2) {
         nextPos -= 1;
       }
+      if (pacmanCurrPos === 364) {
+        nextPos = 391;
+      }
     } else if (direction === 'right') {
       if (rightCount === 4) {
         rightCount = 0;
@@ -365,6 +368,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if ((pacmanCurrPos + 1) % width !== 0 && layout[pacmanCurrPos + 1] !== 1 && layout[pacmanCurrPos + 1] !== 2) {
         nextPos += 1;
+      }
+      if (pacmanCurrPos === 391) {
+        nextPos = 364;
       }
     }
 
