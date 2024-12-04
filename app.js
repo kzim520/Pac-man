@@ -61,7 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  ]
+  ];
+  const originalLayout = [...layout];
 
   // initialize array of ghosts
   const ghosts = [
@@ -111,6 +112,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function restartGame() {
+    if (moveInterval) {
+      clearInterval(moveInterval);
+    }
+    if (gameLoopId) {
+      cancelAnimationFrame(gameLoopId);
+    }
+    ghosts.forEach(ghost => clearInterval(ghost.timerID))
     // reset game state
     score = 0
     pacmanCurrPos = 490
@@ -124,6 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
     isGameOver = false;
     gameOverTimeoutId = null;
     gameLoopId = null;
+    // Reset board state
+    layout.length = 0; 
+    layout.push(...originalLayout);
     // Reset ghosts to their initial positions
     ghosts.forEach(ghost => {
       ghost.isScared = false; // Reset the scared state
@@ -411,7 +422,7 @@ document.addEventListener('DOMContentLoaded', () => {
     checkForWin();
 
     // Redraw the game state after moving Pac-Man
-    requestAnimationFrame(gameLoop);
+    gameLoopId = requestAnimationFrame(gameLoop)
   }
 
   // helper function for determining ghost movement
