@@ -13,7 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let pacmanCurrPos = 490
   let pacmanDirection = null; // Track the current movement direction
   let moveInterval = null; // Interval to move Pac-Man continuously
-  let scareTimeoutId;
+  let scareTimeoutId = null;
+  let gameOverTimeoutId = null;
+  let gameLoopId = null;
+  let isGameOver = false;
   let leftCount = 0;
   let rightCount = 0;
   let upCount = 0;
@@ -66,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
     new Ghost('pinky', 376, 400, 'pink'),
     new Ghost('clyde', 379, 500, 'orange'),
     new Ghost('inky', 351, 300, 'blue')
-  ]
+  ];
 
   // game loop function
   function gameLoop() {
@@ -89,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     drawGhosts();
 
     // Request the next frame
-    requestAnimationFrame(gameLoop)
+    gameLoopId = requestAnimationFrame(gameLoop)
   }
 
   function showWelcomePage() {
@@ -105,6 +108,29 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.style.display = 'block' // Show the game canvas
     gameLoop() // Start the game loop
     startGhostMovement() // Start ghost movement
+  }
+
+  function restartGame() {
+    // reset game state
+    score = 0
+    pacmanCurrPos = 490
+    pacmanDirection = null; 
+    moveInterval = null; 
+    scareTimeoutId = false;
+    leftCount = 0;
+    rightCount = 0;
+    upCount = 0;
+    downCount = 0;
+    isGameOver = false;
+    gameOverTimeoutId = null;
+    gameLoopId = null;
+    // Reset ghosts to their initial positions
+    ghosts.forEach(ghost => {
+      ghost.isScared = false; // Reset the scared state
+      ghost.currentIndex = ghost.startIndex; // Reset position
+    });
+
+    startGame();
   }
 
   function createBoard() {
@@ -560,16 +586,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // check if ghost eats pacman
   function checkForGameOver() {
-      ghosts.forEach(ghost => {
-        if (pacmanCurrPos === ghost.currentIndex && !ghost.isScared) {
-          clearInterval(moveInterval);
-          ghosts.forEach(ghost => clearInterval(ghost.timerID));
-          setTimeout(() => {
-            alert('Game Over');
-          }, 500);
+    if (isGameOver) return;
+
+    ghosts.forEach(ghost => {
+      if (pacmanCurrPos === ghost.currentIndex && !ghost.isScared) {
+        isGameOver = true;
+        clearInterval(moveInterval);
+        ghosts.forEach(ghost => clearInterval(ghost.timerID));
+        if (gameOverTimeoutId) {
+          clearTimeout(gameOverTimeoutId);
         }
-      });
-    }  
+        if (gameLoopId !== null) {
+          cancelAnimationFrame(gameLoopId);
+        }
+        gameOverTimeoutId = setTimeout(() => {
+          alert('Game Over. You Lose!');
+          restartGame();
+        }, 500);
+      }
+    });
+  }  
   
   // check for win
   function checkForWin() {
