@@ -29,8 +29,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const instructions = document.getElementById('text-container');
 
   showWelcomePage();
-
   startButton.addEventListener('click', startGame);
+
+  // game over popup
+  const gameOverPopup = document.getElementById('gameOver');
+  // Reset the game
+  document.getElementById('restart').addEventListener('click', () => {
+    resetGame();
+    startGame();
+    document.getElementById('gameOver').style.display = 'none';
+  });
+  // Quit button, return to welcome page
+  document.getElementById('quit').addEventListener('click', () => {
+    resetGame();
+    showWelcomePage();
+    document.getElementById('gameOver').style.display = 'none';
+  });
+
 
   // 0 - pac-dots, 1 - wall, 2 - ghost-lair, 3 - power-pellet, 4 - empty
   const layout = [
@@ -62,7 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
     1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1,
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  ]
+  ];
+  const originalLayout = [...layout];
 
   // initialize array of ghosts
   const ghosts = [
@@ -112,7 +128,14 @@ document.addEventListener('DOMContentLoaded', () => {
     startGhostMovement(); // Start ghost movement
   }
 
-  function restartGame() {
+  function resetGame() {
+    if (moveInterval) {
+      clearInterval(moveInterval);
+    }
+    if (gameLoopId) {
+      cancelAnimationFrame(gameLoopId);
+    }
+    ghosts.forEach(ghost => clearInterval(ghost.timerID))
     // reset game state
     score = 0
     pacmanCurrPos = 490
@@ -126,13 +149,14 @@ document.addEventListener('DOMContentLoaded', () => {
     isGameOver = false;
     gameOverTimeoutId = null;
     gameLoopId = null;
+    // Reset board state
+    layout.length = 0; 
+    layout.push(...originalLayout);
     // Reset ghosts to their initial positions
     ghosts.forEach(ghost => {
       ghost.isScared = false; // Reset the scared state
       ghost.currentIndex = ghost.startIndex; // Reset position
     });
-
-    startGame();
   }
 
   function createBoard() {
@@ -413,62 +437,8 @@ document.addEventListener('DOMContentLoaded', () => {
     checkForWin();
 
     // Redraw the game state after moving Pac-Man
-    requestAnimationFrame(gameLoop);
+    gameLoopId = requestAnimationFrame(gameLoop)
   }
-
-  // helper function for determining ghost movement
-  function manhattanDistance(pos1, pos2) {
-    const row1 = Math.floor(pos1 / width);
-    const col1 = pos1 % width;
-    const row2 = Math.floor(pos2 / width);
-    const col2 = pos2 % width;
-    return Math.abs(row1 - row2) + Math.abs(col1 - col2);
-  }
-
-  // // function for ghost movement
-  // function moveGhost(ghost) {
-  //   // left, right, up, down
-  //   const directions = [-1, 1, -width, width]; 
-
-  //   // variables used to determine best move
-  //   let bestMove = null;
-  //   let minDistance = Infinity;
-  //   let maxDistance = 0;
-  
-  //   // Iterate through all possible directions (left, right, up, down)
-  //   directions.forEach(direction => {
-  //     const nextPos = ghost.currentIndex + direction;
-  //      // Check if next move is valid 
-  //     if (nextPos >= 0 && nextPos < layout.length &&
-  //         layout[nextPos] !== 1 && // not a wall
-  //         !isGhostAtPosition(nextPos)) { // not another ghost
-  //         // calculate distance to pacman from nextPos
-  //         const distanceToPacman = manhattanDistance(nextPos, pacmanCurrPos);
-  //       if (!ghost.isScared){
-  //           // Choose the move with the smallest distance to Pac-Man
-  //           if (distanceToPacman < minDistance) {
-  //             minDistance = distanceToPacman;
-  //             bestMove = nextPos;
-  //           }
-  //       } else {
-  //           // Choose the move with the smallest distance to Pac-Man
-  //           if (distanceToPacman > maxDistance) {
-  //             maxDistance = distanceToPacman;
-  //             bestMove = nextPos;
-  //           }
-  //         }
-  //       }
-  //   });
-    
-  //   // If a valid best move was found, move the ghost there
-  //   if (bestMove !== null) {
-  //     ghost.currentIndex = bestMove;
-  //   }
-    
-  //   // Check if ghost ate Pac-Man or Pac-Man ate the ghost
-  //   checkGhostEaten();
-  //   checkForGameOver();
-  // }
 
   function moveGhost(ghost) {
     const directions = [-1, 1, -width, width]; // left, right, up, down
@@ -547,6 +517,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return null;
   }
 
+  function manhattanDistance(pos1, pos2) {
+    const row1 = Math.floor(pos1 / width);
+    const col1 = pos1 % width;
+    const row2 = Math.floor(pos2 / width);
+    const col2 = pos2 % width;
+    return Math.abs(row1 - row2) + Math.abs(col1 - col2);
+  }
+
   // Helper function to check if a ghost is already at a specific position
   function isGhostAtPosition(position) {
     return ghosts.some(ghost => ghost.currentIndex === position);
@@ -608,8 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
           cancelAnimationFrame(gameLoopId);
         }
         gameOverTimeoutId = setTimeout(() => {
-          alert('Game Over. You Lose!');
-          restartGame();
+          gameOverPopup.style.display = 'block';
         }, 500);
       }
     });
