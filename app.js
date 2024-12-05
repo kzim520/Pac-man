@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const welcomePage = document.getElementById('welcomePage');
   const startButton = document.getElementById('startButton');
   const scoreLabel = document.getElementById('scoreDisplay');
+  const instructions = document.getElementById('text-container');
 
   showWelcomePage();
 
@@ -106,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     welcomePage.style.display = 'none'; // Hide the welcome page
     scoreLabel.style.display = 'block';
     canvas.style.display = 'block'; // Show the game canvas
+    instructions.style.visibility = 'visible';
     gameLoop(); // Start the game loop
     startGhostMovement(); // Start ghost movement
   }

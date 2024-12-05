@@ -11,32 +11,55 @@
   height: 20px;
 }
 
-/* New body styling to center everything vertically */
 body {
   height: 100%;
   margin: 0;
   display: flex;
-  flex-direction: column; /* Stack items vertically */
+  flex-direction: column; 
   justify-content: center;
-  align-items: center; /* Center horizontally */
-  text-align: center;
+  align-items: center; 
   background-color: black;
   color: white;
+  padding: 20px;
+}
+
+#text-container {
+  position: fixed;  
+  top: 20px;        
+  right: 80px;      
+  margin-bottom: 0; 
+  visibility: hidden;
 }
 
 #gameCanvas {
-  width: 700px; /* Same size as the grid */
+  width: 700px; 
   height: 700px;
-  border: 1px solid black;  /* Keep the border */
-  margin-bottom: 20px; /* Add space below the canvas */
+  border: 1px solid black;  
+  margin-right: 20px; 
+  margin-bottom: 20px;
+}
+
+#score-container {
+  width: 100%;
+  text-align: center;
 }
 
 #score {
-  font-size: 20px;  /* Existing size, adjust if needed */
-  font-weight: bold;  /* Make it bolder for visibility */
+  font-size: 20px;  
+  font-weight: bold; 
   font-size: 1.5rem; 
-  margin: 0; /* Remove default margin */
+  margin: 0; 
   color: white; 
+}
+
+#text-container p {
+  width: 250px; 
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
 }
 
 /* Welcome Page */
@@ -49,7 +72,7 @@ body {
 }
 
 body {
-  font-family: 'Press Start 2P', cursive, sans-serif; /* Fun retro font */
+  font-family: 'Press Start 2P', cursive, sans-serif; 
   background-color: #111;
   overflow: hidden;
 }
@@ -72,7 +95,7 @@ body {
   animation: fadeIn 1s ease-out;
 }
 
-/* Header styling */
+
 .welcome-container h1 {
   font-size: 4em;
   text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.6), 0 0 25px #ff00ff, 0 0 5px #ff00ff;
@@ -81,7 +104,7 @@ body {
   margin-bottom: 20px;
 }
 
-/* Text and paragraph styling */
+
 .welcome-container p {
   font-size: 1.3em;
   margin: 15px 0;
@@ -94,7 +117,7 @@ body {
   color: #ffcc00;
 }
 
-/* Styling for the control instructions */
+
 .welcome-container ul {
   list-style-type: none;
   padding: 0;
@@ -106,7 +129,7 @@ body {
   margin: 5px 0;
 }
 
-/* Styling for the start button */
+
 .start-button {
   background-color: #ffcc00;
   color: black;
