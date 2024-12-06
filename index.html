@@ -18,7 +18,7 @@
     <p><strong>Controls:</strong></p>
     <ul>
       <li>Arrow Keys (up/down/left/right): Move Pac-Man</li>
-      <li>'P': Pause or Resume the Game</li>
+      <li>'P': Pause the Game</li>
     </ul>
     <p><strong>Objective:</strong></p>
     <ul>
@@ -27,10 +27,21 @@
     </ul>
     <button id="startButton" class="start-button">Start Game</button>
   </div>
-  <div id="text-container">
-    <p>MOVE THIS TO THE SIDE</p>
+  <div id="left-container">
+    <p>
+      <strong>How to Win:</strong><br>
+      Navigate Pac-Man around the maze to eat all of the pink pac dots. If caught by a ghost, <strong>Game Over</strong>. 
+      Use the green power pellets that are scattered around the maze to scare the ghosts away!
+    </p>
   </div>
-
+  <div id="right-container">
+    <strong>Scores</strong>
+    <ul id="scoresList"></ul>
+    <p>
+      <strong>Warning</strong><br>
+      Do not spam the arrow keys. This causes Pac-Man to slow down when moving.
+    </p>
+  </div>
   <div id="gameOver">
     <h3>Game Over!</h3>
     <button id="restart">Restart</button>

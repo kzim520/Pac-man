@@ -26,7 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const welcomePage = document.getElementById('welcomePage');
   const startButton = document.getElementById('startButton');
   const scoreLabel = document.getElementById('scoreDisplay');
-  const instructions = document.getElementById('text-container');
+  const instructions = document.getElementById('left-container');
+  const warning = document.getElementById('right-container');
+  
+  const scoreList = document.getElementById('scoresList');
 
   showWelcomePage();
   startButton.addEventListener('click', startGame);
@@ -124,6 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     scoreLabel.style.display = 'block';
     canvas.style.display = 'block'; // Show the game canvas
     instructions.style.visibility = 'visible';
+    warning.style.visibility = 'visible';
     gameLoop(); // Start the game loop
     startGhostMovement(); // Start ghost movement
   }
@@ -228,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ctx.stroke();
       
           // Draw the smaller purple power pellet
-          ctx.fillStyle = '#ea82e5';
+          ctx.fillStyle = '#14FE64';
           ctx.beginPath();
           ctx.arc(col * tileSize + tileSize / 2, row * tileSize + tileSize / 2, powerPelletRadius, 0, Math.PI * 2);
           ctx.fill();
@@ -587,6 +591,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         gameOverTimeoutId = setTimeout(() => {
           gameOverPopup.style.display = 'block';
+          let scoreVal = document.createElement("li");
+          scoreVal.textContent = "Score: " + score;
+          scoreList.appendChild(scoreVal);
         }, 500);
       }
     });
