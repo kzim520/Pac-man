@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let rightCount = 0;
   let upCount = 0;
   let downCount = 0;
+  let topScores = [];
 
   // welcome page
   const welcomePage = document.getElementById('welcomePage');
@@ -119,6 +120,8 @@ document.addEventListener('DOMContentLoaded', () => {
     welcomePage.style.display = 'flex';
     canvas.style.display = 'none';
     scoreLabel.style.display = 'none';
+    instructions.style.visibility = 'hidden';
+    warning.style.visibility = 'hidden';
   }
 
   // Start the game
@@ -141,7 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     ghosts.forEach(ghost => clearInterval(ghost.timerID))
     // reset game state
-    score = 0
+    score = 0;
+    scoreDisplay.textContent = score;
     pacmanCurrPos = 490
     pacmanDirection = null; 
     moveInterval = null; 
@@ -591,9 +595,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         gameOverTimeoutId = setTimeout(() => {
           gameOverPopup.style.display = 'block';
-          let scoreVal = document.createElement("li");
-          scoreVal.textContent = "Score: " + score;
-          scoreList.appendChild(scoreVal);
+          showTopScores();
         }, 500);
       }
     });
@@ -606,5 +608,19 @@ document.addEventListener('DOMContentLoaded', () => {
       document.removeEventListener('keydown', movePacman)
       setTimeout(function() { alert('You Win!')}, 500)
     }
+  }
+
+  function showTopScores() {
+    topScores.push(score);
+    topScores.sort((a, b) => b - a);
+    if (topScores.length > 3) {
+      topScores = topScores.slice(0, 3);
+    }
+    scoreList.innerHTML = '';
+    topScores.forEach((score, index) => {
+      let scoreItem = document.createElement("li");
+      scoreItem.textContent = `#${index + 1} Score: ${score}`;
+      scoreList.appendChild(scoreItem);
+    });
   }
 })  

@@ -50,15 +50,16 @@ body {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.7);
   width: 325px;          
   line-height: 1.6;
+  padding: 15px;             
+  text-align: center;  
   visibility: hidden;    
 }
 
-#left-container p {                       
-  padding: 15px;             
-  text-align: center;      
+#scoresList {
+  list-style-type: none;
 }
 
-#right-container {                       
+#left-container p {                       
   padding: 15px;             
   text-align: center;      
 }
