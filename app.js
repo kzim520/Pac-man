@@ -131,6 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     canvas.style.display = 'block'; // Show the game canvas
     instructions.style.visibility = 'visible';
     warning.style.visibility = 'visible';
+    document.addEventListener('keyup', handleKeys);
     gameLoop(); // Start the game loop
     startGhostMovement(); // Start ghost movement
   }
@@ -340,7 +341,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // event listener to track players keystorkes
-  document.addEventListener('keyup', (e) => {
+  function handleKeys(e) {
     const key = e.key;
     // pause game
     if (key === 'p') {
@@ -370,8 +371,11 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (key === 'ArrowRight' && pacmanDirection !== 'right'&& validDirections.includes(1)) {
       pacmanDirection = 'right';
     }
-    startMoving();
-  });
+
+    if(!isGameOver) {
+      startMoving();
+    }
+  }
 
   // Function to start moving Pac-Man continuously
   function startMoving() {
@@ -595,6 +599,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         gameOverTimeoutId = setTimeout(() => {
           gameOverPopup.style.display = 'block';
+          document.removeEventListener('keyup', handleKeys);
           showTopScores();
         }, 500);
       }
@@ -603,10 +608,21 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // check for win
   function checkForWin() {
-    if (score >= winScore) {
+    if (isGameOver) return;
+    if (!layout.includes(0)) {
+      isGameOver = true;
+      clearInterval(moveInterval);
       ghosts.forEach(ghost => clearInterval(ghost.timerID))
-      document.removeEventListener('keydown', movePacman)
-      setTimeout(function() { alert('You Win!')}, 500)
+      if (gameOverTimeoutId) {
+        clearTimeout(gameOverTimeoutId);
+      }
+      if (gameLoopId !== null) {
+        cancelAnimationFrame(gameLoopId);
+      }
+      document.removeEventListener('keyup', handleKeys);
+      setTimeout(function() {
+        gameOverPopup.style.display = 'block';
+      }, 500)
     }
   }
 
