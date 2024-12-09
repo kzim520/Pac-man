@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     warning.style.visibility = 'visible';
     document.addEventListener('keyup', handleKeys);
     gameLoop(); // Start the game loop
-    startGhostMovement(); // Start ghost movement
+    // startGhostMovement(); // Start ghost movement
   }
 
   function resetGame() {
