@@ -11,15 +11,15 @@ const pacmanSprites = {
   closed: new Image(),
 };
 
-pacmanSprites.up.src = './sprites/pacman/pacman_up.png';
-pacmanSprites.wideUp.src = './sprites/pacman/pacman_wide_up.png';
-pacmanSprites.down.src = './sprites/pacman/pacman_down.png';
-pacmanSprites.wideDown.src = './sprites/pacman/pacman_wide_down.png';
-pacmanSprites.left.src = './sprites/pacman/pacman_left.png';
-pacmanSprites.wideLeft.src = './sprites/pacman/pacman_wide_left.png';
-pacmanSprites.right.src = './sprites/pacman/pacman_right.png';
-pacmanSprites.wideRight.src = './sprites/pacman/pacman_wide_right.png';
-pacmanSprites.closed.src = './sprites/pacman/pacman_closed.png';
+pacmanSprites.up.src = './images/pacman/pacman_up.png';
+pacmanSprites.wideUp.src = './images/pacman/pacman_wide_up.png';
+pacmanSprites.down.src = './images/pacman/pacman_down.png';
+pacmanSprites.wideDown.src = './images/pacman/pacman_wide_down.png';
+pacmanSprites.left.src = './images/pacman/pacman_left.png';
+pacmanSprites.wideLeft.src = './images/pacman/pacman_wide_left.png';
+pacmanSprites.right.src = './images/pacman/pacman_right.png';
+pacmanSprites.wideRight.src = './images/pacman/pacman_wide_right.png';
+pacmanSprites.closed.src = './images/pacman/pacman_closed.png';
 
 const blinkySprites = {
   up: new Image(),
@@ -28,31 +28,31 @@ const blinkySprites = {
   right: new Image(),
 };
 
-blinkySprites.up.src = './sprites/blinky/blinky_up.png';
-blinkySprites.down.src = './sprites/blinky/blinky_down.png';
-blinkySprites.left.src = './sprites/blinky/blinky_left.png';
-blinkySprites.right.src = './sprites/blinky/blinky_right.png';
+blinkySprites.up.src = './images/blinky/blinky_up.png';
+blinkySprites.down.src = './images/blinky/blinky_down.png';
+blinkySprites.left.src = './images/blinky/blinky_left.png';
+blinkySprites.right.src = './images/blinky/blinky_right.png';
 
 const inkySprites = {
   left: new Image()
 };
 
-inkySprites.left.src = './sprites/inky/inky_left.png';
+inkySprites.left.src = './images/inky/inky_left.png';
 
 const clydeSprites = {
   left: new Image()
 };
 
-clydeSprites.left.src = './sprites/clyde/clyde_left.png';
+clydeSprites.left.src = './images/clyde/clyde_left.png';
 
 const pinkySprites = {
   left: new Image()
 };
 
-pinkySprites.left.src = './sprites/pinky/pinky_left.png';
+pinkySprites.left.src = './images/pinky/pinky_left.png';
 
 const scaredSprites = {
   scared: new Image()
 };
 
-scaredSprites.scared.src = './sprites/scared_ghosts/scared.png';
+scaredSprites.scared.src = './images/scared_ghosts/scared.png';
