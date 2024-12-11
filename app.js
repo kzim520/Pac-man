@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     warning.style.visibility = 'visible';
     document.addEventListener('keyup', handleKeys);
     gameLoop(); // Start the game loop
-    // startGhostMovement(); // Start ghost movement
+    startGhostMovement(); // Start ghost movement
   }
 
   function resetGame() {
@@ -609,6 +609,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // check for win
   function checkForWin() {
     if (isGameOver) return;
+  
+    // If there are no more pac dots left (win condition)
     if (!layout.includes(0)) {
       isGameOver = true;
       clearInterval(moveInterval);
@@ -620,11 +622,20 @@ document.addEventListener('DOMContentLoaded', () => {
         cancelAnimationFrame(gameLoopId);
       }
       document.removeEventListener('keyup', handleKeys);
+      
       setTimeout(function() {
+        const youWinPopup = document.getElementById('youWin');
         gameOverPopup.style.display = 'block';
-      }, 500)
+        youWinPopup.style.display = 'block';
+        showTopScores();
+
+        setTimeout(function() {
+          youWinPopup.style.display = 'none';
+        }, 4000); 
+      }, 500); 
     }
   }
+  
 
   function showTopScores() {
     topScores.push(score);
